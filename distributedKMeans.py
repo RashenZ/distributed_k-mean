@@ -3,11 +3,12 @@
 import time
 import sys
 import os
+import random
 
 class DistributedKMeans:
 	"""docstring for DistributedKMeans"""
 	def __init__(self):
-		self.Xm = [] # Set of all observation of not m
+		self.Xm = {"0": [1, 2, 3], "1": [2, 2, 5], "2": [4, 3, 10]} # Set of all observation of not m {nodex: [observation1, observation2]}
 		self.M = 5 # Number of node
 		self.K = 3 # Number of cluster
 		self.Nm = 10 # Number of observation of node m
@@ -15,36 +16,74 @@ class DistributedKMeans:
 		# self.centroid = []
 		# self.nodesDict = {}
 
+	def getMinValue(self, cluster):
+		minValue = 0
+		print(cluster)
+		for index, value in enumerate(cluster):
+			if index == 0:
+				minValue = value
+			elif value < minValue:
+				minValue = value
+		return minValue
+
+	def getMaxValue(self, cluster):
+		maxValue = 0
+		for index, value in enumerate(cluster):
+			if index == 0:
+				maxValue = value
+			elif value > maxValue:
+				maxValue = value
+		return maxValue
+
 	def distributedVarPart(self):
 		""" initialize the cluster """
 		self.C = [] # Center of all cluster k
-		for cluster in range(1, self.K):
-			print("cluster: " + str(cluster))
-			SSE = self.calculateSSE()
-			pass
-		pass
+		self.clusterList = {} # List of all cluster with observations
+		self.SSEList = {} # List of SSE of cluster k
 
-	def average-consensus(self, SSEm):
+		# initialize cluster
+		for node in self.Xm:
+			for index, observation in enumerate(self.Xm[node]):
+				if index not in self.clusterList:
+					self.clusterList[index] = []
+				self.clusterList[index].append(observation)
+		print(self.clusterList)
 
-		pass
+		# set the center (centroid) of k (random for the first iteration) and calculate and set the SSE 
+		for index, cluster in enumerate(self.clusterList):
+			self.C.append(random.randint(self.getMinValue(self.clusterList[cluster]), self.getMaxValue(self.clusterList[cluster])))
+			self.SSEList[cluster] = self.calculateSSE(self.clusterList[cluster], self.C[index])
+		print("center C = ")
+		print(self.C)
+		print("SSE = ")
+		print(self.SSEList)
 
-	def calculateSSE(self):
+
+	def average_consensus(self, cluster):
+		""" Calculate the average consensus """
+		centerk = 0
+		index = 0
+		for value in cluster:
+			centerk += value
+			index += 1
+		centerk = centerk / index
+		return centerk
+
+	def calculateSSE(self, cluster, center):
 		""" calculate the Error Sum of Squares (SSE) for each cluster """
+		SSE = []
+		print("toto")
+		print(self.C)
+		for index, observation in enumerate(cluster):
+			SSE.append(abs(observation - center))
+
+		# return Sum of all (observation - center) squared
+		print(SSE)
 		return SSE
 		pass
 
-	def setCentroid(self):
-		""" Set the centroid for the first iteration """
-		tmpObsDico = {}
-		for node in self.nodesDict:
-			for observation in self.nodesDict[node]:
-				if observation not in tmpObsDico:
-					tmpObsDico[observation] = []
-				tmpObsDico[observation].append(self.nodesDict[node][observation][self.t])
-		print("\n")
-		print(tmpObsDico)
-				
-		pass
+
+
 
 	def start(self):
 		""" start distributed k-means loop """
