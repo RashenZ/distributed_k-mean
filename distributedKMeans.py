@@ -12,11 +12,13 @@ class DistributedKMeans:
 			M = 5,
 			K = 3,
 			Nm = 10,
+			T = 5
 			):
 		self.Xm = Xm # Set of all observation of not m {nodex: [observation1, observation2]}
 		self.M = M # Number of node
 		self.K = K # Number of cluster
 		self.Nm = Nm # Number of observation of node m
+		self.T = T # Number max of iteration
 		self.t = 0 # Iteration
 		# self.centroid = []
 		# self.nodesDict = {}
@@ -96,7 +98,7 @@ class DistributedKMeans:
 
 
 	def average_consensus(self, cluster):
-		""" Calculate the average consensus """
+		""" Calculate the average consensus sum(value of cluster) / len(cluster) """
 		centerk = 0
 		index = 0
 		for value in cluster:
@@ -117,7 +119,13 @@ class DistributedKMeans:
 	def start(self):
 		""" start distributed k-means loop """
 		self.distributedVarPart()
-		while self.t < 3:
+		while self.t < self.T:
 			self.t += 1
-			print(self.t, flush=True)
+			for cluster in self.clusterList:
+				print("cluster: ")
+				print(cluster)
+				print(self.clusterList[cluster])
+				self.C[cluster] = self.average_consensus(self.clusterList[cluster])
+			print(self.C)
+			print("turn t=%s: Centroids%s"% (self.t, self.C), flush=True)
 			time.sleep(1)
