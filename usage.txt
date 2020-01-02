@@ -4,26 +4,35 @@ At the beginning we wanted to do a DKM (Distributed K-Means) with real data that
 - pandas : open source, BSD-licensed library providing high-performance, easy-to-use data structures and data analysis tools for the Python programming language
 - sklearn : Open-source ML (Machine Learning) library for Python. sklearn (Scikit-learn) is a library in Python that provides many unsupervised and supervised learning algorithms.
 
-But we realize after one week that we were still stuck on the usage of networkx and sklearn so we decided to give this idea up because of time. [NEED BULLSHIT FOR THIS PART AYAAAAAA]
+But we realize after one week that we were still stuck on the usage of networkx and sklearn so we decided to give up this idea because of time. [NEED BULLSHIT FOR THIS PART AYAAAAAA]
 
 At the end we created a script that generate raw data.
 
 HOW OUR PROGRAM WORK ?
-Usage of our script called DataGenerator.py :
+Usage of our first script called DataGenerator.py
 
-[DAVID WILL WRITE ]
+The script will allow us to generate data for each node and store it into a file by passing some parameters
 
-After creating our file if all the data
+	- nb_node	= Number of node
+	- nb_obs	= Number of observation generated randomly
+	- min_val	= Minimum value of the data generated
+	- max_val	= Maximum value of the data generated
+example:
+	0:1,10,5,2,9
+	1:6,5,10,2,9
+	2:9,10,1,8,7
 
-[PARSING DAVID WILL WRITE OR ME AFTER]
+Then use our second script called ParsingData.py
+
+It will allow us to parse the previous file generated
 
 We initialize our class DistributedKMeans by sending in parameters :
-- self.Xm = Xm # Set of all observation of not m {nodex: [observation1, observation2]}
-		- Xm 	= Set of all observation of not m {nodex: [observation1, observation2, ..., observation(n)]}
+- self.Xm = Xm # Set of all observation of not m {node(x): [observation1, observation2]}
+		- Xm 	= Set of all observation of not m {node(x): [observation1, observation2, ..., observation(n)]}
 		- M 	= Number of node
 		- K 	= Number of cluster
 		- Nm  	= Number of observation of node m
-If you don't send one of those paramaeters, a default value will be set:
+If you don't send one of those parameters, a default value will be set:
 		- Xm 	= {"0": [1, 2, 3, 15], "1": [2, 2, 5, 1], "2": [4, 3, 10, 50]}
 		- M 	= 5
 		- K 	= 3

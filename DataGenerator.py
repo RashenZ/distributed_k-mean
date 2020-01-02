@@ -19,5 +19,3 @@ def DataGenerator(nb_node, nb_obs, min_val, max_val):
 
     # Close the file
     myfile.close()
-
-DataGenerator(50, 100, 0, 100)
