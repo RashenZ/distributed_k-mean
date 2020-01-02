@@ -7,11 +7,16 @@ import random
 
 class DistributedKMeans:
 	"""docstring for DistributedKMeans"""
-	def __init__(self):
-		self.Xm = {"0": [1, 2, 3], "1": [2, 2, 5], "2": [4, 3, 10]} # Set of all observation of not m {nodex: [observation1, observation2]}
-		self.M = 5 # Number of node
-		self.K = 3 # Number of cluster
-		self.Nm = 10 # Number of observation of node m
+	def __init__(self,
+			Xm = {"0": [1, 2, 3, 15], "1": [2, 2, 5, 1], "2": [4, 3, 10, 50]},
+			M = 5,
+			K = 3,
+			Nm = 10,
+			):
+		self.Xm = Xm # Set of all observation of not m {nodex: [observation1, observation2]}
+		self.M = M # Number of node
+		self.K = K # Number of cluster
+		self.Nm = Nm # Number of observation of node m
 		self.t = 0 # Iteration
 		# self.centroid = []
 		# self.nodesDict = {}
@@ -53,10 +58,41 @@ class DistributedKMeans:
 		for index, cluster in enumerate(self.clusterList):
 			self.C.append(random.randint(self.getMinValue(self.clusterList[cluster]), self.getMaxValue(self.clusterList[cluster])))
 			self.SSEList[cluster] = self.calculateSSE(self.clusterList[cluster], self.C[index])
-		print("center C = ")
-		print(self.C)
-		print("SSE = ")
-		print(self.SSEList)
+		# print("center C = ")
+		# print(self.C)
+		# print("SSE = ")
+		# print(self.SSEList)
+
+		for SSE in self.SSEList:
+			for value in self.SSEList[SSE]:
+				if value >= 20:
+					print("TO SPLIT")
+					self.splitCluster(SSE)
+					break
+
+	def splitCluster(self, cluster):
+		""" split the cluster in 2 sub cluster """
+		maxValue = self.getMaxValue(self.clusterList[cluster])
+		minValue = self.getMinValue(self.clusterList[cluster])
+		midValue = round(maxValue - ((maxValue - minValue) / 2))
+
+		# Create a set of centroid
+		firstCentroid = random.randint(minValue, midValue)
+		secondCentroid = random.randint(midValue, maxValue)
+
+		cpyCluster = self.clusterList[cluster]
+		nextName = str(len(self.clusterList))
+		self.clusterList[cluster] = []
+		self.clusterList[nextName] = []
+
+		for value in cpyCluster:
+			if abs(value - firstCentroid) < abs(value - secondCentroid):
+				self.clusterList[cluster].append(value)
+			else:
+				self.clusterList[nextName].append(value)
+			pass
+		pass
+		print(self.clusterList)
 
 
 	def average_consensus(self, cluster):
@@ -72,18 +108,11 @@ class DistributedKMeans:
 	def calculateSSE(self, cluster, center):
 		""" calculate the Error Sum of Squares (SSE) for each cluster """
 		SSE = []
-		print("toto")
-		print(self.C)
 		for index, observation in enumerate(cluster):
 			SSE.append(abs(observation - center))
 
 		# return Sum of all (observation - center) squared
-		print(SSE)
 		return SSE
-		pass
-
-
-
 
 	def start(self):
 		""" start distributed k-means loop """
