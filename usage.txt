@@ -24,7 +24,13 @@ example:
 
 Then use our second script called ParsingData.py
 
-It will allow us to parse the previous file generated
+It will allow us to parse the previous file generated and retrieve a dictionary like this
+
+{
+	0: [1,10,5,2,9],
+	1: [6,5,10,2,9],
+	2: [9,10,1,8,7]
+}
 
 We initialize our class DistributedKMeans by sending in parameters :
 - self.Xm = Xm # Set of all observation of not m {node(x): [observation1, observation2]}
